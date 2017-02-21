@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Microsoft.Bot.Connector;
+using Microsoft.Bot.Builder.Dialogs;
+using TorvaldsBot.Dialogs;
 using Newtonsoft.Json;
 
 namespace TorvaldsBot
@@ -21,13 +23,7 @@ namespace TorvaldsBot
         {
             if (activity.Type == ActivityTypes.Message)
             {
-                ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
-                // calculate something for us to return
-                int length = (activity.Text ?? string.Empty).Length;
-
-                // return our reply to the user
-                Activity reply = activity.CreateReply($"You sent {activity.Text} which was {length} characters");
-                await connector.Conversations.ReplyToActivityAsync(reply);
+                await Conversation.SendAsync(activity, () => new CoreLuisDialog());
             }
             else
             {
